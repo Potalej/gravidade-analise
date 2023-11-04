@@ -3,7 +3,7 @@
 """
 
 from math import sqrt
-from auxiliares.auxiliares import centro_massas, momento_inercia_cm
+from auxiliares.auxiliares import centroDeMassas, momentoInerciaCm
 
 def momento_linear_medio (P):
   return [sum(p)/len(P) for p in list(zip(*P))]
@@ -20,6 +20,12 @@ def momento_dilatacao (Rcms, Pcms):
     for a in range(len(Rcms))
   )
 
+def momentoDilatacao (Rt, Pt, Rcm):
+  return sum(
+    sum((Rt[a][i]-Rcm[i])*Pt[a][i] for i in range(3))
+    for a in range(len(Rt))
+  )
+
 def mudar_posicao (massas, Rcms, Icm):
   return [
     [sqrt(massas[a]/Icm)*Rcms[a][i] for i in range(3)]
@@ -28,11 +34,11 @@ def mudar_posicao (massas, Rcms, Icm):
 
 def mudar_somente_posicao (massas, Rs):
    # centro de massas
-  rcm = centro_massas(massas, Rs)
+  rcm = centroDeMassas(massas, Rs)
   rcms = [centro_massas_relativo(rcm, ra) for ra in Rs]
 
   # momento de inercia
-  Icm = momento_inercia_cm(massas, Rs)
+  Icm = momentoInerciaCm(massas, Rs)
   return mudar_posicao(massas, rcms, Icm)
 
 def mudanca_coordenadas (massas, R, P):
@@ -44,11 +50,11 @@ def mudanca_coordenadas (massas, R, P):
     p_a = p_a sqrt(Icm / m_a) - D s_a
   """
   # centro de massas
-  rcm = centro_massas(massas, R)
+  rcm = centroDeMassas(massas, R)
   rcms = [centro_massas_relativo(rcm, ra) for ra in R]
 
   # momento de inercia
-  Icm = momento_inercia_cm(massas, R)
+  Icm = momentoInerciaCm(massas, R)
 
   # aplica a transformacao de posicao
   sigmas = mudar_posicao(massas, Rcms, Icm)
@@ -70,7 +76,7 @@ def mudanca_coordenadas (massas, R, P):
 
 def complexidade (I, mtot, energia_potencial):
   """Calcula a complexidade a partir do momento de inércia."""
-  L_rms = (I**.5)/mtot
-  L_mhl = mtot**2 / abs(energia_potencial)
-  C = L_rms/L_mhl
+  L_rms = (I**.5)
+  L_mhl = 1 / abs(energia_potencial)
+  C = (L_rms/L_mhl)*mtot**(-5/2)
   return C

@@ -6,7 +6,7 @@ from math import sqrt
 from numpy import true_divide
 from auxiliares.auxiliares import distancia, norma2
 
-def EC (P, m:list)->float:
+def Ec (P, m:list)->float:
   soma = 0
   for a in range(len(m)):
     pa = P[a]
